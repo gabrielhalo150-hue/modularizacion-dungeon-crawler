@@ -130,7 +130,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Personaje.php" />
+    <None Include="Entidades.php" />
+    <None Include="Main.php" />
+    <None Include="Visuales.php" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entidades.h" />

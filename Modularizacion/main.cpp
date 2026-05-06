@@ -10,39 +10,35 @@ int main() {
     srand((unsigned int)time(NULL));
     char control;
 
-    do { // Bucle de repetición global para reintentar el juego
+    do {
         string nombre;
         int opcion;
-
 #ifdef _WIN32
         system("cls");
 #else
         system("clear");
 #endif
+        cout << "--- CREACION DE PERSONAJE ---\nNombre: ";
+        cin.ignore(); getline(cin, nombre);
 
-        cout << "--- CREACION DE PERSONAJE ---\n";
-        cout << "Nombre: ";
-        cin.ignore();
-        getline(cin, nombre);
-
-        cout << "\nELIJA SU CLASE (Analice las descripciones):\n";
-        cout << "1. GUERRERO: El baluarte de acero. Alta salud (150 HP) y defensa solida.\n";
-        cout << "2. MAGO: El canon de cristal. Baja salud (80 HP) pero un poder arcano devastador.\n";
-        cout << "3. PICARO: El maestro del equilibrio. Salud media (110 HP) y gran agilidad.\n> ";
+        cout << "\nCLASES DISPONIBLES:\n";
+        cout << "1. GUERRERO: 150 HP | El tanque definitivo.\n";
+        cout << "2. MAGO: 80 HP | Fragil pero con dano critico.\n";
+        cout << "3. PICARO: 110 HP | Equilibrio y agilidad.\n> ";
         cin >> opcion;
 
         Heroe* jugador;
-        if (opcion == 1) jugador = new Heroe(nombre, "Guerrero", 150, 15, 2);
-        else if (opcion == 2) jugador = new Heroe(nombre, "Mago", 80, 35, 4);
-        else jugador = new Heroe(nombre, "Picaro", 110, 25, 3);
+        if (opcion == 1) jugador = new Heroe(nombre, "Guerrero", 150, 18, 2);
+        else if (opcion == 2) jugador = new Heroe(nombre, "Mago", 80, 40, 4);
+        else jugador = new Heroe(nombre, "Picaro", 110, 28, 3);
 
         string biomas[] = { "PANTANO", "CRIPTAS" };
-        string log = "Te adentras en la mazmorra...";
+        string log = "Te adentras en la oscuridad...";
         int salaGlobal = 0;
         bool retirado = false;
 
         for (int b = 0; b < 2; b++) { // Navegacion por biomas
-            for (int s = 0; s < 4; s++) { // Salas por bioma
+            for (int s = 0; s < 5; s++) { // 5 salas por bioma para mas experiencia
                 if (!jugador->vivo() || retirado) break;
 
                 while (true) {
@@ -51,35 +47,38 @@ int main() {
                     int op; cin >> op;
 
                     if (op == 1) {
-                        bool esBoss = (s == 3);
-                        if (rand() % 100 < 65 || esBoss) {
-                            Entidad* m = spawnEnemigo(esBoss);
-                            log = "¡" + m->nombre + " te intercepta!";
-                            while (m->vivo() && jugador->vivo()) {
+                        bool esBoss = (s == 4); // Jefe al final de cada bioma
+                        if (rand() % 100 < 70 || esBoss) { // Mayor probabilidad de encuentro para ganar EXP
+                            Entidad* m = spawnEnemigo(b, esBoss);
+                            log = "¡" + m->nombre + " te ataca!";
+
+                            while (m->vivo() && jugador->vivo()) { // Combate
                                 dibujarDungeon(salaGlobal, jugador->getHP(), jugador->getNivel(), jugador->nombre, jugador->getClase(), biomas[b], log);
                                 cout << "--- COMBATE --- 1. Atacar  2. Curar  3. Huir\n> ";
                                 int c; cin >> c;
                                 if (c == 1) {
                                     int d = jugador->getAtk(); m->recibirDano(d);
-                                    log = "Causas " + to_string(d) + " de dano al enemigo.";
+                                    log = "Golpeas por " + to_string(d) + " de dano.";
                                 }
                                 else if (c == 2) jugador->curar();
-                                else if (c == 3 && rand() % 100 < 50) { delete m; m = nullptr; break; }
+                                else if (c == 3 && !esBoss && rand() % 100 < 50) { delete m; m = nullptr; break; }
 
                                 if (m && m->vivo()) {
                                     int dM = m->getAtk(); jugador->recibirDano(dM);
-                                    log += " | Te hieren (-" + to_string(dM) + " HP).";
+                                    log += " | Enemigo quita " + to_string(dM) + " HP.";
                                 }
                             }
                             if (jugador->vivo() && m && !m->vivo()) {
-                                jugador->ganarExp(esBoss ? 150 : 40);
+                                log = "Victoria sobre " + m->nombre;
+                                jugador->ganarExp(esBoss ? 120 : 45); // EXP aumentada
                                 delete m;
                             }
                         }
-                        if (!jugador->vivo()) break;
+                        else log = "Caminas sin incidentes...";
+
                         salaGlobal++; break;
                     }
-                    else if (op == 2) jugador->descansar();
+                    else if (op == 2) { jugador->descansar(); log = "Recuperas fuerzas."; }
                     else if (op == 4) { retirado = true; break; }
                 }
             }
@@ -90,17 +89,14 @@ int main() {
             cin >> control;
         }
         else if (retirado) {
-            cout << "\nHas escapado con vida de la mazmorra.\n";
-            control = 'q';
+            cout << "\nHas escapado con vida.\n"; control = 'q';
         }
         else {
-            cout << "\n¡HAS COMPLETADO LA MAZMORRA CON EXITO!\n";
-            control = 'q';
+            cout << "\n¡HAS CONQUISTADO LA MAZMORRA!\n"; control = 'q';
         }
+        delete jugador;
 
-        delete jugador; // Liberacion de memoria para el TDA
-
-    } while (tolower(control) == 'r'); // Repeticion si el usuario presiona R
+    } while (tolower(control) == 'r'); // Estatuto de Repeticion
 
     return 0;
 }

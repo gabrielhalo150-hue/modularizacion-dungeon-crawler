@@ -6,7 +6,7 @@
 
 class Entidad {
 protected:
-    int hp, atk; // Escalares de estado
+    int hp, atk; // Escalares protegidos
 public:
     std::string nombre;
     Entidad(std::string n, int h, int a) : nombre(n), hp(h), atk(a) {}
@@ -22,7 +22,7 @@ private:
     std::string clase;
 public:
     Heroe(std::string n, std::string c, int h, int a, int p)
-        : Entidad(n, h, a), clase(c), nivel(1), exp(0), expSiguiente(100), pociones(p) {
+        : Entidad(n, h, a), clase(c), nivel(1), exp(0), expSiguiente(80), pociones(p) {
     }
 
     void ganarExp(int e) {
@@ -31,24 +31,27 @@ public:
             nivel++;
             exp = 0;
             expSiguiente += 100;
-            hp += 40;
-            atk += 10;
-            std::cout << "\n>>> ¡LEVEL UP! Has alcanzado el Nivel " << nivel << " <<<\n";
+            hp += 50; // Aumento significativo de HP
+            atk += 12; // Aumento significativo de Daño
+            std::cout << "\n>>> ¡LEVEL UP! Ahora eres Nivel " << nivel << ". HP y ATK aumentados! <<<\n";
         }
     }
-    void descansar() { hp += 30; }
-    void curar() { if (pociones > 0) { hp += 55; pociones--; } }
+    void descansar() { hp += 35; }
+    void curar() { if (pociones > 0) { hp += 60; pociones--; } }
     int getNivel() { return nivel; }
     int getPociones() { return pociones; }
     std::string getClase() { return clase; }
 };
 
-inline Entidad* spawnEnemigo(bool esBoss) {
-    if (esBoss) return new Entidad("Jefe Final: Dragon de Ceniciza", 180, 28);
-    int r = rand() % 100; // Probabilidades de aparición
-    if (r < 40) return new Entidad("Rata Imunda", 25, 6);
-    if (r < 75) return new Entidad("Slime de Acido", 35, 12);
-    return new Entidad("Guerrero Esqueleto", 55, 18);
+inline Entidad* spawnEnemigo(int bioma, bool esBoss) {
+    if (esBoss) {
+        if (bioma == 0) return new Entidad("JEFE: Guardian del Pantano", 100, 15);
+        else return new Entidad("FINAL BOSS: DRAGON ANCESTRAL", 200, 30);
+    }
+    int r = rand() % 100;
+    if (r < 45) return new Entidad("Rata Imunda", 20, 5); // 45% Probabilidad
+    if (r < 80) return new Entidad("Slime de Acido", 35, 10); // 35% Probabilidad
+    return new Entidad("Esqueleto Guerrero", 55, 18); // 20% Probabilidad
 }
 
 #endif

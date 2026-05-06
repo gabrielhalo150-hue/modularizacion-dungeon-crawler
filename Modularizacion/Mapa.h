@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+// Arreglos de coordenadas para la @
 const int coordX[] = { 2, 7, 16, 2, 7, 16, 2, 7 };
 const int coordY[] = { 2, 2, 4, 7, 7, 7, 4, 1 };
 
@@ -27,13 +28,13 @@ inline void dibujarDungeon(int sala, int hp, int lvl, std::string n, std::string
 #endif
 
     std::cout << "==========================================\n";
-    std::cout << " Heroe: " << n << " (" << c << ") | LVL: " << lvl << " | HP: " << hp << "\n";
-    std::cout << " Bioma: " << bioma << " | Sala: " << sala << "\n";
+    std::cout << " " << n << " (" << c << ") | LVL: " << lvl << " | HP: " << hp << "\n";
+    std::cout << " BIOMA: " << bioma << " | SALA: " << sala + 1 << "\n";
     std::cout << "==========================================\n";
 
-    for (int i = 0; i < 9; i++) { // Bucle de repetición anidado
+    for (int i = 0; i < 9; i++) { // Bucle anidado de renderizado
         for (int j = 0; j < 22; j++) {
-            if (i == coordY[sala] && j == coordX[sala]) std::cout << '@';
+            if (i == coordY[sala % 8] && j == coordX[sala % 8]) std::cout << '@';
             else std::cout << arte[i][j];
         }
         std::cout << "\n";
@@ -49,7 +50,6 @@ inline void pantallaMuerte() {
 #else
     system("clear");
 #endif
-    // Calavera Demoniaca ASCII Restaurada
     std::cout << "             ,      ,             \n";
     std::cout << "            /(.-\"\"-.)\\            \n";
     std::cout << "        |\\  \\/      \\/  /|        \n";
@@ -60,7 +60,7 @@ inline void pantallaMuerte() {
     std::cout << "            \\  '--'  /            \n";
     std::cout << "             '------'             \n";
     std::cout << "\n       HAAS SIDO ELIMINADO        \n";
-    std::cout << "     Press [R] to Restart / [Q] to Quit \n\n";
+    std::cout << "   [R] REINTENTAR  |  [Q] SALIR   \n\n";
 }
 
 #endif

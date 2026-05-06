@@ -23,14 +23,18 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Personaje.php" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Entidades.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
     <ClInclude Include="Mapa.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Main.php">
+      <Filter>PHP</Filter>
+    </None>
+    <None Include="Entidades.php" />
+    <None Include="Visuales.php" />
   </ItemGroup>
 </Project>
