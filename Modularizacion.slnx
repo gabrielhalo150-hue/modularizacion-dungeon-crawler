@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Modularizacion/Modularizacion.vcxproj" Id="a168bc04-1cae-4fce-81f1-d955d6d39f70" />
+</Solution>
